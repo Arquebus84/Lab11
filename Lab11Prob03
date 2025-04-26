@@ -1,0 +1,129 @@
+import java.io.*;
+import java.util.ArrayList;
+
+/**
+* File: Lab11Prob03.java
+* Class: CSCI 1302
+* Author: Matteo Ventura, Naomi Oropesa, Sean Roe, Carter Kidd, Alexander Waters
+* Created on: Apr 25, 2025
+* Last Modified: Apr 25, 2025
+* Description: Modify the program from Lab11Prob02; implement Serializable interface to the Person class
+*/
+public class Lab11Prob03 {
+	
+	public static void main(String[] args) {
+		DataInputStream input;
+		DataOutputStream output;
+		
+		//Create an ArrayList of type Person
+		ArrayList<Person> personArrayList = new ArrayList<>();
+		
+		try {
+			input = new DataInputStream(new FileInputStream("src/people.dat"));
+						
+			int value = 0;
+			while(value < input.available()) {				
+				personArrayList.add(new Person(input.readInt(), input.readUTF(), input.readUTF(), input.readInt(), input.readDouble()));
+			}
+			
+		}catch(Exception ex) {
+			System.out.println("File not found");
+		}
+		
+		//Sort the ArrayList
+		java.util.Collections.sort(personArrayList);
+		try {
+			output = new DataOutputStream(new FileOutputStream("src/people-salary-sorted-objects.dat"));
+			/**For each Person object in the ArrayList, write each object's toString() to the sorted file as a UTF*/
+			for(Person e : personArrayList) {
+				output.writeUTF(e.toString());
+			}
+			
+			/**Test: Print the contents of the sorted data file to ensure it was done correctly*/
+			DataInputStream input2 = new DataInputStream(new FileInputStream("src/people-salary-sorted-objects.dat"));
+			int value = 0;
+			while(value < input2.available()){
+				System.out.print(input2.readUTF());
+			}			
+			//Close input2 to prevent memory leakage
+			input2.close();
+			
+		}catch(Exception ex) {
+			System.out.println("Sorted-objects file not found");
+		}
+	
+	}
+
+}
+
+//Modify Person class to implement Serializable
+class Person implements Serializable, Comparable<Person>{
+	
+	private int age;
+	private String fullName;
+	private String address;
+	private int zipCode;
+	private double salary;
+	
+	public Person() {
+		
+	}
+	public Person(int age, String fullName, String address, int zipCode, double salary) {
+		setAge(age);
+		setFullName(fullName);
+		setAddress(address);
+		setZipCode(zipCode);
+		setSalary(salary);
+	}
+	
+	//Getter and Setter: Age
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	//Getter and Setter: FullName
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	//Getter and Setter: Address
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	//Getter and Setter: ZipCode
+	public int getZipCode() {
+		return zipCode;
+	}
+	public void setZipCode(int zipCode) {
+		this.zipCode = zipCode;
+	}
+	//Getter and Setter: Salary
+	public double getSalary() {
+		return salary;
+	}
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%d %s %s %d $%,.2f", getAge(), getFullName(), getAddress(), getZipCode(), getSalary());
+	}
+	@Override
+	public int compareTo(Person otherPerson) {
+		if(this.getSalary() == otherPerson.getSalary()) {
+			return 0;
+		}else if(this.getSalary() < otherPerson.getSalary()) {
+			return 1;
+		}else {
+			return -1;
+		}
+	}
+}
