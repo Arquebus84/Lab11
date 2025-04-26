@@ -1,0 +1,63 @@
+/**
+* File: Lab11Prob01.java
+* Class: CSCI 1302
+* Author: Matteo Ventura, Naomi Oropesa, Sean Roe, Carter Kidd, Alexander Waters
+* Created on: Apr 25, 2025
+* Last Modified: Apr 25, 2025
+* Description: Create an input file and print the contents from src/people.dat
+*/
+
+import java.io.*;
+
+/**GitHub: https://github.com/Arquebus84/Lab11.git*/
+public class Lab11Prob01 {
+
+	public static void main(String[] args) {
+		
+		//Two Data Stream input/output for reading/writing bytes and converting them into primitive data types
+		DataInputStream input;
+		DataOutputStream output;
+		try {
+			//Read the people.dat file
+			input = new DataInputStream(new FileInputStream("src/people.dat"));
+			//Copy the contents of people.dat to people-copy
+			output = new DataOutputStream(new FileOutputStream("src/people-Copy.dat"));
+			
+			/**Read the file using DataInputStream*/
+			int value = 0;
+			while(value < input.available()) {
+				/**Printing contents of input file*/
+//				System.out.println(input.readInt());
+//				System.out.println(input.readUTF());
+//				System.out.println(input.readUTF());
+//				System.out.println(input.readInt());
+//				System.out.println(input.readDouble());
+				
+				//Writing contents of input file to output file
+				output.writeInt(input.readInt());
+				output.writeUTF(input.readUTF());
+				output.writeUTF(input.readUTF());
+				output.writeInt(input.readInt());
+				output.writeDouble(input.readDouble());
+			}
+			
+			//Create new input file to print the contents
+			DataInputStream input2 = new DataInputStream(new FileInputStream("src/people-Copy.dat"));
+			int valueOut = 0;
+			while(valueOut < input2.available()) {
+				System.out.print(input2.readInt() + " ");
+				System.out.print(input2.readUTF() + " ");
+				System.out.print(input2.readUTF() + " ");
+				System.out.print(input2.readInt() + " ");
+				System.out.printf("%.2f%n", input2.readDouble());
+			}
+			//Close the DataInputStream to prevent memory leakage
+			input2.close();
+			
+		}catch(Exception ex) {
+			System.out.println("File not found");
+		}
+
+	}
+
+}
